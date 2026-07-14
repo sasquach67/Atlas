@@ -47,6 +47,7 @@ export interface RelationshipRepository {
   create(relationship: Relationship): Relationship;
   list(): Relationship[];
   listForClaim(claimId: string): Relationship[];
+  update(id: string, patch: Partial<Omit<Relationship, "id">>): Relationship;
   delete(id: string): void;
 }
 

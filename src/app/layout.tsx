@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Newsreader, Karla, IBM_Plex_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { AppShell } from "@/components/shell/app-shell";
+import "@xyflow/react/dist/style.css";
 import "./globals.css";
 
 const display = Newsreader({

@@ -479,6 +479,29 @@ class SqliteRelationshipRepository implements RelationshipRepository {
     return rows.map(rowToRelationship);
   }
 
+  update(id: string, patch: Partial<Omit<Relationship, "id">>): Relationship {
+    const update = buildUpdate(
+      "relationships",
+      id,
+      patch,
+      {
+        fromClaimId: "from_claim_id",
+        toClaimId: "to_claim_id",
+        relationshipType: "relationship_type",
+        note: "note",
+        userConfirmed: "user_confirmed",
+      },
+      new Set(),
+      new Set(["userConfirmed"]),
+    );
+    if (update) this.db.prepare(update.sql).run(...update.params);
+    const row = this.db.prepare(`SELECT * FROM relationships WHERE id = ?`).get(id) as
+      | Row
+      | undefined;
+    if (!row) throw new Error(`Relationship not found: ${id}`);
+    return rowToRelationship(row);
+  }
+
   delete(id: string): void {
     this.db.prepare(`DELETE FROM relationships WHERE id = ?`).run(id);
   }
