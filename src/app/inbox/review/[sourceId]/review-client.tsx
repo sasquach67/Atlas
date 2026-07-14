@@ -194,7 +194,15 @@ export function ReviewClient({
   async function sendToAtlas() {
     setSending(true);
     try {
-      const response = await fetch(`/api/sources/${source.id}/send-to-atlas`, { method: "POST" });
+      const response = await fetch(`/api/sources/${source.id}/send-to-atlas`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          claimIds: claims
+            .filter((claim) => claim.status === "approved")
+            .map((claim) => claim.id),
+        }),
+      });
       if (!response.ok) throw new Error(await readError(response));
       const data = (await response.json()) as { count: number };
       setSentCount(data.count);
@@ -288,9 +296,9 @@ export function ReviewClient({
               {sending ? "Sending" : `Send ${approvedCount} approved claims to Atlas`}
             </Button>
             {sentCount !== null ? (
-              <Link href="/atlas" className={buttonVariants({ variant: "secondary" })}>
+              <a href="/atlas" className={buttonVariants({ variant: "secondary" })}>
                 Open Atlas
-              </Link>
+              </a>
             ) : null}
           </div>
         </div>

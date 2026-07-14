@@ -1,4 +1,5 @@
 import { expect, test, type Locator } from "@playwright/test";
+import { resetDemoData } from "./helpers";
 
 async function nodeTranslate(locator: Locator) {
   return locator.evaluate((element) => {
@@ -11,6 +12,7 @@ async function nodeTranslate(locator: Locator) {
 
 test.describe.serial("atlas canvas", () => {
   test("organizes seeded unsorted claims and opens source trace", async ({ page }) => {
+    await resetDemoData(page);
     await page.goto("/atlas");
 
     await expect(page.getByRole("button", { name: "Organize 4 unsorted" })).toBeVisible({
@@ -18,9 +20,7 @@ test.describe.serial("atlas canvas", () => {
     });
     await expect(page.getByText("4 claim chips")).toBeVisible();
 
-    const claimNode = page
-      .getByTestId("claim-node-seed-claim-500hours")
-      .locator("xpath=ancestor::*[contains(@class, 'react-flow__node')]");
+    const claimNode = page.getByTestId("rf__node-seed-claim-500hours");
     const before = await nodeTranslate(claimNode);
 
     await page.getByRole("button", { name: "Organize 4 unsorted" }).click();
@@ -35,9 +35,7 @@ test.describe.serial("atlas canvas", () => {
     expect(after.x).toBeGreaterThan(3200);
 
     await page.getByLabel("Search atlas").fill("clinical hours");
-    const mcatNode = page
-      .getByTestId("claim-node-seed-claim-mcat-long")
-      .locator("xpath=ancestor::*[contains(@class, 'react-flow__node')]");
+    const mcatNode = page.getByTestId("rf__node-seed-claim-mcat-long");
     await expect(mcatNode).toHaveClass(/opacity-25/);
 
     await claimNode.click();

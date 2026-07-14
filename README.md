@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Premed Atlas
 
-## Getting Started
+Premed Atlas turns scattered pre-med advice into structured, source-linked knowledge. Import pasted text or audio/video metadata, run deterministic mock transcription and extraction, review atomic claims, then send approved claims to the Atlas canvas for organizing across 20 pre-med pillars.
 
-First, run the development server:
+The MVP is intentionally local-first: SQLite persistence, repository interfaces for future storage swaps, mock AI by default, and an E2E proof for the full Definition of Done from upload through timestamp trace and export.
+
+## Quickstart
 
 ```bash
+npm i
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000. The app auto-creates `data/atlas.db` and seeds demo data unless `ATLAS_SKIP_SEED=1` is set.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Useful checks:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run lint
+npm run typecheck
+npm test
+npm run build
+npm run test:e2e
+```
 
-## Learn More
+## Environment
 
-To learn more about Next.js, take a look at the following resources:
+| Variable | Purpose |
+| --- | --- |
+| `ANTHROPIC_API_KEY` | Enables real extraction through the Anthropic provider. |
+| `ATLAS_EXTRACTION_MODEL` | Overrides the extraction model label used by the Anthropic provider. |
+| `ATLAS_DB_PATH` | SQLite path. Defaults to `data/atlas.db`; E2E uses `data/e2e.db`. |
+| `ATLAS_FORCE_MOCK_AI` | Set to `1` to force deterministic mock extraction even with an API key. |
+| `ATLAS_MOCK_DELAY_MS` | Mock transcription delay. Tests use small or zero delays. |
+| `ATLAS_SKIP_SEED` | Set to `1` to start with an empty database. |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Mock vs Real AI
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Tests and Playwright always use mock providers, so no API key is required for CI or local verification. The mock transcriber generates deterministic timestamped segments from file metadata, and the mock extractor emits schema-valid claims from transcripts, including the seeded "500 clinical hours" fixture.
 
-## Deploy on Vercel
+With `ANTHROPIC_API_KEY` set and `ATLAS_FORCE_MOCK_AI` unset, extraction uses the Anthropic provider behind the same `ExtractionProvider` interface. The rest of the app still writes through repositories, so provider swaps do not change persistence or UI code.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Architecture Map
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```text
+src/lib/types.ts                  Domain types and enum const arrays
+src/lib/schema/extraction.ts      Zod AI extraction contract and sanitizer
+src/modules/taxonomy/             20 pre-med pillars and keyword classifier
+src/modules/transcript/           Mock transcription and pasted transcript parser
+src/modules/extraction/           Mock and Anthropic extraction providers
+src/modules/ingestion/            Import/process service logic and validation
+src/modules/graph/                Pure Atlas layout and graph builders
+src/modules/export/               JSON and Markdown export serializers
+src/db/                           SQLite open/reset/seed helpers
+src/repositories/                 Persistence interfaces and SQLite adapter
+src/components/shell/             App shell and page header
+src/components/ui/                shadcn/base-ui primitives
+src/app/api/                      Thin route handlers over repos/modules
+src/app/                          Next.js pages and client islands
+e2e/                              Playwright MVP proof and smoke specs
+```
+
+## Decision Log
+
+- Standalone product: Premed Atlas is an advice knowledge workspace, not a generic note app.
+- Audio-first ingestion: MVP stores file metadata and transcripts, not media bytes.
+- Claims are fundamental: the atomic claim is the durable knowledge unit, with source/timestamp traceability.
+- Manual review before merge: AI output starts as pending review; users approve, reject, edit, and organize.
+- SQLite now, Supabase later: all persistence goes through repository interfaces so storage can swap behind the same contracts.
+- KnowledgeItem folded into claims: `itemType` distinguishes advice, warning, evidence, resource, reflection, and concept without a second object model.

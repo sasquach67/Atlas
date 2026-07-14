@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { ArrowRight, ListPlus, Save, Trash2 } from "lucide-react";
@@ -195,13 +194,13 @@ function ClaimDetailForm({
             ) : null}
 
             {claim.sourceId ? (
-              <Link
+              <a
                 href={`/sources/${claim.sourceId}?t=${claim.timestampStart ?? 0}`}
                 className={cn(buttonVariants({ variant: "outline" }), "w-fit")}
               >
                 <ArrowRight className="size-4" strokeWidth={1.75} />
                 View in source
-              </Link>
+              </a>
             ) : null}
 
             {claimRelationships.length > 0 ? (

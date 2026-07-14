@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 import {
   Background,
   BackgroundVariant,
@@ -10,7 +11,6 @@ import {
   type NodeChange,
   type NodeMouseHandler,
   type NodeTypes,
-  useReactFlow,
 } from "@xyflow/react";
 import { toast } from "sonner";
 import {
@@ -412,8 +412,61 @@ function MobileAtlas() {
   );
 }
 
+function claimMatchesQuery(claim: Claim, query: string) {
+  const haystack = [
+    claim.canonicalText,
+    claim.originalText,
+    claim.topic,
+    claim.tags.join(" "),
+  ]
+    .join(" ")
+    .toLowerCase();
+  return haystack.includes(query);
+}
+
+function SearchResultsPanel() {
+  const claims = useAtlasStore((state) => state.claims);
+  const search = useAtlasStore((state) => state.search);
+  const setSelection = useAtlasStore((state) => state.setSelection);
+  const query = search.trim().toLowerCase();
+  const matches = useMemo(() => {
+    if (!query) return [];
+    return claims
+      .filter(
+        (claim) =>
+          (claim.status === "unsorted" || claim.status === "organized") &&
+          claimMatchesQuery(claim, query),
+      )
+      .slice(0, 6);
+  }, [claims, query]);
+
+  if (!query) return null;
+
+  return (
+    <div className="absolute left-4 top-20 z-10 grid w-[min(34rem,calc(100%-2rem))] gap-1 rounded-lg border bg-card/95 p-2 shadow-sm">
+      <div className="flex items-center justify-between gap-3 px-2 pb-1 text-xs text-muted-foreground">
+        <span>{matches.length === 1 ? "1 matching claim" : `${matches.length} matching claims`}</span>
+        <span>Search results</span>
+      </div>
+      {matches.length === 0 ? (
+        <p className="px-2 py-1.5 text-sm text-muted-foreground">No matching claims.</p>
+      ) : (
+        matches.map((claim) => (
+          <button
+            key={claim.id}
+            type="button"
+            className="rounded-md px-2 py-1.5 text-left text-sm leading-snug hover:bg-muted/60 focus-visible:ring-3 focus-visible:ring-ring/50"
+            onClick={() => setSelection({ type: "claim", id: claim.id })}
+          >
+            {claim.canonicalText}
+          </button>
+        ))
+      )}
+    </div>
+  );
+}
+
 function AtlasFlowInner() {
-  const reactFlow = useReactFlow<AtlasNode>();
   const claims = useAtlasStore((state) => state.claims);
   const relationships = useAtlasStore((state) => state.relationships);
   const sources = useAtlasStore((state) => state.sources);
@@ -441,6 +494,9 @@ function AtlasFlowInner() {
     [claims, relationships, sources, positions, search, filters, collapsedPillars],
   );
   const unsortedClaims = claims.filter((claim) => claim.status === "unsorted");
+  const activeClaimCount = claims.filter(
+    (claim) => claim.status === "unsorted" || claim.status === "organized",
+  ).length;
 
   const onNodesChange = useCallback(
     (changes: NodeChange<AtlasNode>[]) => {
@@ -553,7 +609,6 @@ function AtlasFlowInner() {
           : Promise.resolve(),
       ]);
       toast.success(`Organized ${unsortedClaims.length} claims into ${new Set(unsortedClaims.map((claim) => claim.pillarId)).size} pillars.`);
-      reactFlow.fitView({ duration: 400, padding: 0.2 });
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Organize failed.");
     } finally {
@@ -581,6 +636,7 @@ function AtlasFlowInner() {
         onRedo={() => void redo()}
         onReset={() => void resetLayout()}
       />
+      <SearchResultsPanel />
       <ReactFlow
         nodes={graph.nodes}
         edges={graph.edges}
@@ -605,6 +661,17 @@ function AtlasFlowInner() {
           Organizing claims...
         </div>
       ) : null}
+      {activeClaimCount === 0 ? (
+        <div className="absolute left-1/2 top-1/2 z-10 grid -translate-x-1/2 -translate-y-1/2 gap-3 rounded-lg border bg-card p-5 text-center shadow-sm">
+          <p className="font-medium">No claims yet</p>
+          <p className="max-w-xs text-sm text-muted-foreground">
+            Import advice in the Inbox to create reviewable claims for the Atlas.
+          </p>
+          <Link href="/inbox" className={buttonVariants({ variant: "secondary" })}>
+            Open Inbox
+          </Link>
+        </div>
+      ) : null}
       <OrganizeDialog
         open={organizeOpen}
         onOpenChange={setOrganizeOpen}
@@ -620,11 +687,32 @@ export function AtlasCanvas({ initialData }: { initialData: AtlasInitialData }) 
   const loaded = useAtlasStore((state) => state.loaded);
 
   useEffect(() => {
+    const controller = new AbortController();
     const temporal = useAtlasStore.temporal.getState();
     temporal.pause();
     useAtlasStore.getState().load(initialData);
     temporal.resume();
     temporal.clear();
+
+    async function refreshAtlasData() {
+      const response = await fetch(`/api/atlas?ts=${Date.now()}`, {
+        cache: "no-store",
+        signal: controller.signal,
+      });
+      if (!response.ok) return;
+      const data = (await response.json()) as AtlasInitialData;
+      temporal.pause();
+      useAtlasStore.getState().load(data);
+      temporal.resume();
+      temporal.clear();
+    }
+
+    void refreshAtlasData().catch((error) => {
+      if (error instanceof DOMException && error.name === "AbortError") return;
+      console.error(error);
+    });
+
+    return () => controller.abort();
   }, [initialData]);
 
   if (!loaded) {

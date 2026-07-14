@@ -1,12 +1,16 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { RefreshCw, Trash2 } from "lucide-react";
-import type { TranscriptSegment } from "@/lib/types";
-import { formatTimestamp } from "@/lib/format";
+import type { Claim, Source, Transcript, TranscriptSegment } from "@/lib/types";
+import { formatTimestamp, humanize } from "@/lib/format";
+import { PageHeader } from "@/components/shell/page-header";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,6 +27,12 @@ async function readError(response: Response): Promise<string> {
   const data = (await response.json().catch(() => null)) as { error?: string } | null;
   return data?.error ?? "Request failed.";
 }
+
+type SourceDetailPayload = {
+  source: Source;
+  transcript: Transcript | null;
+  claims: Claim[];
+};
 
 export function TranscriptSegments({
   segments,
@@ -70,6 +80,150 @@ export function TranscriptSegments({
           </div>
         );
       })}
+    </div>
+  );
+}
+
+export function SourceDetailView({
+  source,
+  transcript,
+  claims,
+  targetSeconds,
+}: {
+  source: Source;
+  transcript: Transcript | null;
+  claims: Claim[];
+  targetSeconds: number | null;
+}) {
+  return (
+    <div>
+      <PageHeader
+        title={source.title}
+        description={`${source.creatorName ?? "Unknown creator"} - ${source.platform ?? source.type}`}
+      >
+        <SourceActions sourceId={source.id} claimCount={claims.length} />
+      </PageHeader>
+      <div className="grid gap-6 px-6 py-8 md:px-10 xl:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
+        <section className="grid content-start gap-4">
+          <Card className="rounded-lg">
+            <CardHeader>
+              <CardTitle>Metadata</CardTitle>
+            </CardHeader>
+            <CardContent className="grid gap-2 text-sm text-muted-foreground">
+              <p>Status: {humanize(source.processingStatus)}</p>
+              <p>Imported: {new Date(source.importedAt).toLocaleString()}</p>
+              {source.sourceUrl ? (
+                <Link href={source.sourceUrl} className="text-primary underline underline-offset-4">
+                  Original URL
+                </Link>
+              ) : null}
+              {source.description ? <p>{source.description}</p> : null}
+            </CardContent>
+          </Card>
+
+          <Card className="rounded-lg">
+            <CardHeader>
+              <CardTitle>Transcript</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <TranscriptSegments
+                segments={transcript?.segments ?? []}
+                targetSeconds={targetSeconds}
+              />
+            </CardContent>
+          </Card>
+        </section>
+
+        <section className="grid content-start gap-3">
+          <h2 className="font-display text-xl font-semibold">Claims</h2>
+          {claims.length === 0 ? (
+            <p className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
+              No claims are linked to this source yet.
+            </p>
+          ) : (
+            claims.map((claim) => (
+              <Link
+                key={claim.id}
+                href={`/atlas?claim=${claim.id}`}
+                className="rounded-lg border bg-card p-4 hover:bg-muted/30"
+              >
+                <div className="flex flex-wrap gap-1.5">
+                  <Badge variant="outline">{humanize(claim.status)}</Badge>
+                  <Badge variant="outline">{humanize(claim.verificationStatus)}</Badge>
+                  {claim.timestampStart !== null ? (
+                    <Badge variant="secondary" className="font-mono">
+                      {formatTimestamp(claim.timestampStart)}
+                    </Badge>
+                  ) : null}
+                </div>
+                <p className="mt-2 font-medium">{claim.canonicalText}</p>
+              </Link>
+            ))
+          )}
+        </section>
+      </div>
+    </div>
+  );
+}
+
+export function SourceDetailLoader({
+  sourceId,
+  targetSeconds,
+}: {
+  sourceId: string;
+  targetSeconds: number | null;
+}) {
+  const [payload, setPayload] = useState<SourceDetailPayload | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      for (let attempt = 0; attempt < 20; attempt++) {
+        const controller = new AbortController();
+        const timeout = window.setTimeout(() => controller.abort(), 1500);
+        try {
+          const response = await fetch(`/api/sources/${sourceId}?ts=${Date.now()}`, {
+            cache: "no-store",
+            signal: controller.signal,
+          });
+          if (response.ok) {
+            const data = (await response.json()) as SourceDetailPayload;
+            if (!cancelled) setPayload(data);
+            return;
+          }
+        } catch {
+          // Freshly-created sources can race server component reads in production mode.
+        } finally {
+          window.clearTimeout(timeout);
+        }
+        await new Promise((resolve) => window.setTimeout(resolve, 500));
+      }
+      if (!cancelled) setError("This source is not available yet. Return to Sources and retry.");
+    }
+    void load();
+    return () => {
+      cancelled = true;
+    };
+  }, [sourceId]);
+
+  if (payload) {
+    return (
+      <SourceDetailView
+        source={payload.source}
+        transcript={payload.transcript}
+        claims={payload.claims}
+        targetSeconds={targetSeconds}
+      />
+    );
+  }
+
+  return (
+    <div>
+      <PageHeader title="Source" description="Loading source details." />
+      <p className={`px-6 py-8 text-sm md:px-10 ${error ? "text-destructive" : "text-muted-foreground"}`}>
+        {error ?? "Loading source..."}
+      </p>
     </div>
   );
 }
