@@ -6,7 +6,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # Premed Atlas — project rules
 
-- **Start here: read `CODEX_HANDOFF.md`** — it defines what exists (M0–M2, done), what to build (M3–M6), conventions, and the completion gate.
+- **Start here: read `CODEX_HANDOFF.md`** (conventions, structure, completion gate; M0–M6 are done) **then `PHASE2_HANDOFF.md`** (current work: M7–M10 — real transcription, duplicate detection, guide generation).
 - All persistence goes through `getRepos()` from `@/db`; `modules/` and `repositories/` never import from `app/` or `components/`.
 - Keep `npm run lint && npm run typecheck && npm test` green at every milestone boundary.
 - Tests and e2e always use the mock AI providers (`ATLAS_FORCE_MOCK_AI=1`); never require an API key.
