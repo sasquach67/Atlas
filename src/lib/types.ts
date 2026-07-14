@@ -142,6 +142,8 @@ export interface Source {
   processingStatus: ProcessingStatus;
   errorMessage: string | null;
   checksum: string | null;
+  /** Absolute path of retained media bytes; null once retention deletes them. */
+  mediaPath: string | null;
 }
 
 export interface TranscriptSegment {

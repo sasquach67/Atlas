@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS sources (
   processing_status TEXT NOT NULL DEFAULT 'uploaded',
   error_message TEXT,
   checksum TEXT,
+  media_path TEXT,
   UNIQUE (workspace_id, checksum)
 );
 

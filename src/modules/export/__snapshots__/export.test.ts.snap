@@ -134,7 +134,8 @@ exports[`Premed Atlas export serializers > serializes seed data to stable JSON 1
       "importedAt": "2026-07-08T16:20:00.000Z",
       "processingStatus": "complete",
       "errorMessage": null,
-      "checksum": "seed-checksum-clinical"
+      "checksum": "seed-checksum-clinical",
+      "mediaPath": null
     },
     {
       "id": "seed-src-mcat-reddit",
@@ -148,7 +149,8 @@ exports[`Premed Atlas export serializers > serializes seed data to stable JSON 1
       "importedAt": "2026-07-05T09:05:00.000Z",
       "processingStatus": "complete",
       "errorMessage": null,
-      "checksum": "seed-checksum-mcat-reddit"
+      "checksum": "seed-checksum-mcat-reddit",
+      "mediaPath": null
     },
     {
       "id": "seed-src-mcat-yt",
@@ -162,7 +164,8 @@ exports[`Premed Atlas export serializers > serializes seed data to stable JSON 1
       "importedAt": "2026-07-05T09:00:00.000Z",
       "processingStatus": "complete",
       "errorMessage": null,
-      "checksum": "seed-checksum-mcat-yt"
+      "checksum": "seed-checksum-mcat-yt",
+      "mediaPath": null
     },
     {
       "id": "seed-src-prereq",
@@ -176,7 +179,8 @@ exports[`Premed Atlas export serializers > serializes seed data to stable JSON 1
       "importedAt": "2026-07-02T11:00:00.000Z",
       "processingStatus": "complete",
       "errorMessage": null,
-      "checksum": "seed-checksum-prereq"
+      "checksum": "seed-checksum-prereq",
+      "mediaPath": null
     },
     {
       "id": "seed-src-research",
@@ -190,7 +194,8 @@ exports[`Premed Atlas export serializers > serializes seed data to stable JSON 1
       "importedAt": "2026-06-28T08:30:00.000Z",
       "processingStatus": "complete",
       "errorMessage": null,
-      "checksum": "seed-checksum-research"
+      "checksum": "seed-checksum-research",
+      "mediaPath": null
     },
     {
       "id": "seed-src-lor",
@@ -204,7 +209,8 @@ exports[`Premed Atlas export serializers > serializes seed data to stable JSON 1
       "importedAt": "2026-06-25T19:45:00.000Z",
       "processingStatus": "complete",
       "errorMessage": null,
-      "checksum": "seed-checksum-lor"
+      "checksum": "seed-checksum-lor",
+      "mediaPath": null
     }
   ],
   "transcripts": [

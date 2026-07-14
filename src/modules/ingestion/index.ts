@@ -11,12 +11,14 @@ import {
 import { sanitizeExtractionResult, type ExtractionResult } from "@/lib/schema/extraction";
 import { PILLAR_IDS } from "@/modules/taxonomy";
 import {
-  djb2Hash,
   getTranscriptionProvider,
   MAX_TRANSCRIPT_CHARS,
   parseTranscriptText,
+  TranscriptionFailedError,
+  type TranscribeFileInput,
   type TranscriptionProvider,
 } from "@/modules/transcript";
+import { deleteMediaFile, MAX_UPLOAD_BYTES, saveMediaFile, sha256 } from "./media";
 import {
   ExtractionFailedError,
   getExtractionProvider,
@@ -36,13 +38,6 @@ export const ImportSourceSchema = z.discriminatedUnion("kind", [
     kind: z.literal("text"),
     text: z.string().min(1),
     ...textCommon,
-  }),
-  z.object({
-    kind: z.literal("file"),
-    fileName: z.string().trim().min(1).max(260),
-    fileSize: z.number().int().nonnegative(),
-    fileType: z.string().trim().min(1).max(120),
-    title: z.string().trim().min(1).max(180).optional(),
   }),
   z.object({
     kind: z.literal("note"),
@@ -101,14 +96,14 @@ function fileSourceType(fileType: string): SourceType | null {
 
 function fileDescription(fileName: string, fileSize: number, fileType: string): string {
   return [
-    "Audio is transcribed, media is not retained.",
+    "Media is stored temporarily and deleted once the transcript is saved.",
     `Original file: ${fileName}`,
     `Type: ${fileType}`,
     `Size: ${fileSize} bytes`,
   ].join("\n");
 }
 
-function fileMetadataFromSource(source: Source): { name: string; size: number; type: string } {
+function fileMetadataFromSource(source: Source): TranscribeFileInput {
   const description = source.description ?? "";
   const original = /^Original file:\s*(.+)$/im.exec(description)?.[1]?.trim();
   const type = /^Type:\s*(.+)$/im.exec(description)?.[1]?.trim();
@@ -117,7 +112,68 @@ function fileMetadataFromSource(source: Source): { name: string; size: number; t
     name: original || source.title,
     size: Number.isFinite(size) ? size : 0,
     type: type || (source.type === "audio" ? "audio/mpeg" : "video/mp4"),
+    path: source.mediaPath ?? undefined,
   };
+}
+
+export interface UploadedFileInput {
+  fileName: string;
+  fileType: string;
+  title?: string;
+  bytes: Uint8Array;
+}
+
+/**
+ * Real media upload: bytes land in temporary storage (deleted after
+ * transcription per the retention policy) and the checksum is content-based.
+ */
+export function importUploadedFile(repos: Repositories, input: UploadedFileInput): ImportResult {
+  const type = fileSourceType(input.fileType);
+  if (!type) {
+    return {
+      ok: false,
+      status: 400,
+      message: "Choose an audio or video file so Premed Atlas can transcribe it.",
+    };
+  }
+  if (input.bytes.byteLength === 0) {
+    return { ok: false, status: 400, message: "That file is empty." };
+  }
+  if (input.bytes.byteLength > MAX_UPLOAD_BYTES) {
+    return {
+      ok: false,
+      status: 400,
+      message: "Keep uploads under 100 MB. Compress the audio and try again.",
+    };
+  }
+  const checksum = sha256(input.bytes);
+  const existing = repos.sources.findByChecksum(checksum);
+  if (existing) {
+    return {
+      ok: false,
+      status: 409,
+      message: "This file has already been imported.",
+      existingSource: existing,
+    };
+  }
+  const id = crypto.randomUUID();
+  const mediaPath = saveMediaFile(id, input.fileName, input.bytes);
+  const source = repos.sources.create({
+    id,
+    type,
+    title: input.title?.trim() || input.fileName,
+    creatorName: null,
+    platform: null,
+    sourceUrl: null,
+    durationSeconds: null,
+    description: fileDescription(input.fileName, input.bytes.byteLength, input.fileType),
+    importedAt: nowIso(),
+    processingStatus: "queued",
+    errorMessage: null,
+    checksum,
+    mediaPath,
+  });
+  return { ok: true, source, transcript: null };
 }
 
 function createTranscript(
@@ -138,43 +194,6 @@ function createTranscript(
 
 export function importSource(repos: Repositories, input: ImportSourceInput): ImportResult {
   const importedAt = nowIso();
-
-  if (input.kind === "file") {
-    const type = fileSourceType(input.fileType);
-    if (!type) {
-      return {
-        ok: false,
-        status: 400,
-        message: "Choose an audio or video file so Premed Atlas can transcribe it.",
-      };
-    }
-    const checksum = djb2Hash(input.fileName + input.fileSize).toString(16);
-    const existing = repos.sources.findByChecksum(checksum);
-    if (existing) {
-      return {
-        ok: false,
-        status: 409,
-        message: "This file has already been imported.",
-        existingSource: existing,
-      };
-    }
-    const source = repos.sources.create({
-      id: crypto.randomUUID(),
-      type,
-      title: input.title?.trim() || input.fileName,
-      creatorName: null,
-      platform: null,
-      sourceUrl: null,
-      durationSeconds: null,
-      description: fileDescription(input.fileName, input.fileSize, input.fileType),
-      importedAt,
-      processingStatus: "queued",
-      errorMessage: null,
-      checksum,
-    });
-    return { ok: true, source, transcript: null };
-  }
-
   const text = input.text.trim();
   if (text.length > MAX_TRANSCRIPT_CHARS) {
     return {
@@ -197,6 +216,7 @@ export function importSource(repos: Repositories, input: ImportSourceInput): Imp
     processingStatus: "transcript_ready",
     errorMessage: null,
     checksum: null,
+    mediaPath: null,
   });
   const transcript = createTranscript(repos, source.id, parseTranscriptText(text));
   return { ok: true, source, transcript };
@@ -285,6 +305,11 @@ export async function processSource(
         model: result.model,
         editedByUser: false,
       });
+      // Retention (spec Section 31): transcript is saved, media can go.
+      if (source.mediaPath) {
+        deleteMediaFile(source.mediaPath);
+        source = repos.sources.update(source.id, { mediaPath: null });
+      }
     }
 
     source = repos.sources.update(source.id, {
@@ -324,7 +349,10 @@ export async function processSource(
     });
     return { source, transcript, claims, relationships };
   } catch (error) {
-    const retriable = error instanceof ExtractionFailedError ? error.retriable : true;
+    const retriable =
+      error instanceof ExtractionFailedError || error instanceof TranscriptionFailedError
+        ? error.retriable
+        : true;
     repos.sources.update(source.id, {
       processingStatus: "failed",
       errorMessage:

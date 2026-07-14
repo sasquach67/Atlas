@@ -57,6 +57,7 @@ function rowToSource(row: Row): Source {
     processingStatus: str(row, "processing_status") as Source["processingStatus"],
     errorMessage: strOrNull(row, "error_message"),
     checksum: strOrNull(row, "checksum"),
+    mediaPath: strOrNull(row, "media_path"),
   };
 }
 
@@ -152,8 +153,8 @@ class SqliteSourceRepository implements SourceRepository {
   create(source: Source): Source {
     this.db
       .prepare(
-        `INSERT INTO sources (id, type, title, creator_name, platform, source_url, duration_seconds, description, imported_at, processing_status, error_message, checksum)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO sources (id, type, title, creator_name, platform, source_url, duration_seconds, description, imported_at, processing_status, error_message, checksum, media_path)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       )
       .run(
         source.id,
@@ -168,6 +169,7 @@ class SqliteSourceRepository implements SourceRepository {
         source.processingStatus,
         source.errorMessage,
         source.checksum,
+        source.mediaPath,
       );
     return source;
   }
@@ -208,6 +210,7 @@ class SqliteSourceRepository implements SourceRepository {
         processingStatus: "processing_status",
         errorMessage: "error_message",
         checksum: "checksum",
+        mediaPath: "media_path",
       },
       new Set(),
       new Set(),

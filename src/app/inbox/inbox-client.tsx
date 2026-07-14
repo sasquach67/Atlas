@@ -132,21 +132,17 @@ export function InboxClient({ initialSources }: { initialSources: SourceWithCoun
     }
     setSubmittingFile(true);
     try {
+      const form = new FormData();
+      form.append("file", file);
+      if (title) form.append("title", title);
       const response = await fetch("/api/sources", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          kind: "file",
-          fileName: file.name,
-          fileSize: file.size,
-          fileType: file.type || "audio/mpeg",
-          title: title || undefined,
-        }),
+        body: form,
       });
       if (!response.ok) throw new Error(await readError(response));
       const data = (await response.json()) as { source: Source };
       if (fileInputRef.current) fileInputRef.current.value = "";
-      toast.success("File metadata imported. Mock transcription is running.");
+      toast.success("File uploaded. Transcription is running.");
       await refreshSources();
       void startProcessing(data.source.id).catch((error) => toast.error(error.message));
     } catch (error) {
@@ -184,8 +180,8 @@ export function InboxClient({ initialSources }: { initialSources: SourceWithCoun
               <CardTitle id="import-heading">Import</CardTitle>
             </div>
             <CardDescription>
-              Paste advice text or select audio/video metadata. Audio is transcribed; media is not
-              retained.
+              Paste advice text or upload an audio/video file. Media is stored only until the
+              transcript is saved, then deleted.
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-4">
@@ -261,7 +257,7 @@ export function InboxClient({ initialSources }: { initialSources: SourceWithCoun
                   disabled={submittingFile}
                 >
                   <FileAudio2 className="size-4" strokeWidth={1.75} />
-                  {submittingFile ? "Importing" : "Import file metadata"}
+                  {submittingFile ? "Uploading" : "Upload and transcribe"}
                 </Button>
               </div>
             </div>

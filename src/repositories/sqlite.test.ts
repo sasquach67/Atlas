@@ -18,6 +18,7 @@ function makeSource(overrides: Partial<Source> = {}): Source {
     processingStatus: "uploaded",
     errorMessage: null,
     checksum: null,
+    mediaPath: null,
     ...overrides,
   };
 }

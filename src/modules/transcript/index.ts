@@ -1,4 +1,7 @@
 import type { TranscriptSegment } from "@/lib/types";
+import { OpenAiTranscriptionProvider } from "./openai-provider";
+
+export { OpenAiTranscriptionProvider, TranscriptionFailedError } from "./openai-provider";
 
 /**
  * Transcription abstraction (spec E.33). The MVP ships only the mock
@@ -13,9 +16,17 @@ export interface TranscriptInput {
   model: string | null;
 }
 
+export interface TranscribeFileInput {
+  name: string;
+  size: number;
+  type: string;
+  /** Absolute path to the media bytes on disk. Real providers need it; the mock ignores it. */
+  path?: string;
+}
+
 export interface TranscriptionProvider {
   readonly name: string;
-  transcribe(file: { name: string; size: number; type: string }): Promise<TranscriptInput>;
+  transcribe(file: TranscribeFileInput): Promise<TranscriptInput>;
 }
 
 /** ~50k chars keeps extraction well inside one model call (spec: short-form content). */
@@ -52,11 +63,7 @@ export class MockTranscriptionProvider implements TranscriptionProvider {
 
   constructor(private delayMs = 1500) {}
 
-  async transcribe(file: {
-    name: string;
-    size: number;
-    type: string;
-  }): Promise<TranscriptInput> {
+  async transcribe(file: TranscribeFileInput): Promise<TranscriptInput> {
     if (this.delayMs > 0) {
       await new Promise((resolve) => setTimeout(resolve, this.delayMs));
     }
@@ -149,6 +156,9 @@ export function parseTranscriptText(raw: string): TranscriptInput {
 }
 
 export function getTranscriptionProvider(): TranscriptionProvider {
+  if (process.env.OPENAI_API_KEY && process.env.ATLAS_FORCE_MOCK_AI !== "1") {
+    return new OpenAiTranscriptionProvider(process.env.OPENAI_API_KEY);
+  }
   const delay = process.env.ATLAS_MOCK_DELAY_MS
     ? Number(process.env.ATLAS_MOCK_DELAY_MS)
     : 1500;

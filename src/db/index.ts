@@ -26,7 +26,23 @@ export function openDatabase(dbPath: string): Database {
   db.pragma("journal_mode = WAL");
   db.pragma("foreign_keys = ON");
   db.exec(SCHEMA_SQL);
+  applyAdditiveMigrations(db);
   return db;
+}
+
+/**
+ * CREATE TABLE IF NOT EXISTS doesn't add columns to databases created before
+ * a schema change, so new columns are added here (idempotent, additive only).
+ */
+function applyAdditiveMigrations(db: Database): void {
+  ensureColumn(db, "sources", "media_path", "TEXT");
+}
+
+function ensureColumn(db: Database, table: string, column: string, ddl: string): void {
+  const columns = db.prepare(`PRAGMA table_info(${table})`).all() as { name: string }[];
+  if (!columns.some((c) => c.name === column)) {
+    db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${ddl}`);
+  }
 }
 
 function isEmpty(db: Database): boolean {

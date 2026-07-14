@@ -30,6 +30,7 @@ export function seedDatabase(repos: Repositories): void {
       importedAt: "2026-07-08T16:20:00.000Z",
       processingStatus: "complete",
       errorMessage: null,
+      mediaPath: null,
       checksum: "seed-checksum-clinical",
     },
     {
@@ -44,6 +45,7 @@ export function seedDatabase(repos: Repositories): void {
       importedAt: "2026-07-05T09:00:00.000Z",
       processingStatus: "complete",
       errorMessage: null,
+      mediaPath: null,
       checksum: "seed-checksum-mcat-yt",
     },
     {
@@ -58,6 +60,7 @@ export function seedDatabase(repos: Repositories): void {
       importedAt: "2026-07-05T09:05:00.000Z",
       processingStatus: "complete",
       errorMessage: null,
+      mediaPath: null,
       checksum: "seed-checksum-mcat-reddit",
     },
     {
@@ -72,6 +75,7 @@ export function seedDatabase(repos: Repositories): void {
       importedAt: "2026-07-02T11:00:00.000Z",
       processingStatus: "complete",
       errorMessage: null,
+      mediaPath: null,
       checksum: "seed-checksum-prereq",
     },
     {
@@ -86,6 +90,7 @@ export function seedDatabase(repos: Repositories): void {
       importedAt: "2026-06-28T08:30:00.000Z",
       processingStatus: "complete",
       errorMessage: null,
+      mediaPath: null,
       checksum: "seed-checksum-research",
     },
     {
@@ -100,6 +105,7 @@ export function seedDatabase(repos: Repositories): void {
       importedAt: "2026-06-25T19:45:00.000Z",
       processingStatus: "complete",
       errorMessage: null,
+      mediaPath: null,
       checksum: "seed-checksum-lor",
     },
   ];

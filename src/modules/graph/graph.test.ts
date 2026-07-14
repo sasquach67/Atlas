@@ -23,6 +23,7 @@ const baseSource: Source = {
   processingStatus: "complete",
   errorMessage: null,
   checksum: null,
+  mediaPath: null,
 };
 
 function claim(id: string, patch: Partial<Claim> = {}): Claim {
