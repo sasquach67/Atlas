@@ -15,6 +15,7 @@ import {
 import { toast } from "sonner";
 import {
   ArrowDownAZ,
+  Download,
   RotateCcw,
   Search,
   Undo2,
@@ -32,7 +33,7 @@ import {
   useAtlasTemporal,
 } from "@/stores/atlas-store";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -219,6 +220,14 @@ function Toolbar({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      <a href="/api/export?format=json" className={buttonVariants({ variant: "outline" })}>
+        <Download className="size-4" strokeWidth={1.75} />
+        JSON
+      </a>
+      <a href="/api/export?format=markdown" className={buttonVariants({ variant: "outline" })}>
+        <Download className="size-4" strokeWidth={1.75} />
+        Markdown
+      </a>
     </div>
   );
 }

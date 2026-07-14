@@ -1,0 +1,1097 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Premed Atlas export serializers > serializes seed data to Markdown grouped by pillar 1`] = `
+"# Premed Atlas Export
+
+Exported: 2026-07-14T00:00:00.000Z
+
+## Prerequisites and Course Planning
+
+### Most US MD programs require one year of biology with laboratory work.
+
+> Most medical schools require one academic year of biology with laboratory experience.
+
+Evidence | Country Specific | Official Organization | Official | Officially Verified | Current | 0.97
+-- *AAMC: Premedical coursework requirements overview* (aamc.org)
+
+## MCAT
+
+### Sources disagree on MCAT timeline: a long part-time runway versus short full-time dedicated prep. Both can work; the fit depends on work obligations, burnout risk, and content retention.
+
+Concept | Universal | Unknown Or Self Reported | Unknown | Disputed | Current | 0.90
+
+### Spread MCAT preparation over about six months if working or in classes.
+
+> I get asked constantly whether you can prep for the MCAT while working full-time. I did, and it took me six months.
+
+Advice | Applicant Specific, Financial Situation Specific | Physician | Professional Experience | Disputed | Current | 0.80
+-- *Why I studied for the MCAT over 6 months (while working)* (YouTube) @ 0:12
+
+### Study for the MCAT in roughly three months of full-time dedicated prep rather than a long stretched timeline.
+
+> 3 months full-time or don't bother. Long timelines just mean you forget the first chapters by test day.
+
+Advice | Applicant Specific | Premed Student | Anecdotal | Disputed | Current | 0.75
+-- *r/MCAT: 3 months full-time or don't bother* (Reddit)
+
+## Clinical Experience
+
+### Applicants need at least 500 clinical hours to apply.
+
+> You need at least 500 clinical hours to apply. That's the floor.
+
+Advice | Applicant Specific | Medical Student | Anecdotal | Unverified | Probably Current | 0.55
+-- *How many clinical hours you ACTUALLY need* (TikTok) @ 0:18
+
+### Keep a reflection journal after every clinical shift.
+
+> Keep a journal after every shift — you will forget the patients that mattered by the time you write your personal statement.
+
+Advice | Universal | Medical Student | Professional Experience | Unverified | Current | 0.85
+-- *How many clinical hours you ACTUALLY need* (TikTok) @ 0:58
+
+### No universal minimum clinical hour requirement exists; treat quoted thresholds as one person's heuristic.
+
+> You need at least 500 clinical hours to apply.
+
+Warning | Universal | Unknown Or Self Reported | Unknown | Unverified | Current | 0.70
+-- *How many clinical hours you ACTUALLY need* (TikTok) @ 0:18
+
+### Clinical experience must involve real patient contact to count.
+
+> It has to be real patient contact. Stocking shelves in a hospital gift shop does not count.
+
+Concept | Universal | Medical Student | Community Consensus | Community Supported | Current | 0.82
+-- *How many clinical hours you ACTUALLY need* (TikTok) @ 0:42
+
+## Research
+
+### Cold-email principal investigators with a specific reference to their recent work and a clear, small ask.
+
+> Don't send a generic template. Mention the paper of theirs you actually read and ask for fifteen minutes.
+
+Advice | Universal | Physician | Professional Experience | Community Supported | Current | 0.88
+-- *Getting into research with zero connections (podcast)* (Podcast) @ 5:12
+
+### Publications are not required for MD applicants; sustained engagement matters more.
+
+> The vast majority of successful applicants have zero publications. What committees want is evidence you engaged with the process.
+
+Advice | Country Specific | Physician | Community Consensus | Community Supported | Current | 0.86
+-- *Getting into research with zero connections (podcast)* (Podcast) @ 18:25
+
+## Letters of Recommendation
+
+### Ask for recommendation letters while the relationship is active, not years later.
+
+> Ask before you leave the class. Your professor remembers you right now — in two years you're a name on a roster.
+
+Advice | Universal | Applicant | Community Consensus | Community Supported | Current | 0.90
+-- *Ask for letters BEFORE you leave the class* (Instagram) @ 0:08
+
+## Personal Statement and Story Bank
+
+### Show growth through patient stories rather than listing achievements.
+
+Concept | Universal | Advisor | Community Consensus | Community Supported | Current | 0.85
+
+### My hospice patient Ms. R taught me that presence matters more than procedure — a moment I want to open my personal statement with.
+
+Reflection | Applicant Specific | Premed Student | Anecdotal | Unverified | Current | 1.00
+
+## Financial Planning
+
+### The White Coat Investor blog and book cover physician-specific debt, insurance, and investing basics.
+
+Resource | Universal | Financial Professional | Professional Experience | Community Supported | Probably Current | 0.90
+
+## Actions
+
+- [ ] Ask Dr. Rivera for a letter before June
+  Organic chemistry relationship is active now; ask before the semester ends. Bring a résumé and a draft of the personal statement.
+
+## Contradictions
+
+- Spread MCAT preparation over about six months if working or in classes. <> Study for the MCAT in roughly three months of full-time dedicated prep rather than a long stretched timeline.
+  Long part-time runway vs. short full-time dedicated prep.
+"
+`;
+
+exports[`Premed Atlas export serializers > serializes seed data to stable JSON 1`] = `
+"{
+  "exportedAt": "2026-07-14T00:00:00.000Z",
+  "version": 1,
+  "sources": [
+    {
+      "id": "seed-src-clinical",
+      "type": "video",
+      "title": "How many clinical hours you ACTUALLY need",
+      "creatorName": "@medschoolmichael",
+      "platform": "TikTok",
+      "sourceUrl": "https://www.tiktok.com/@medschoolmichael/video/500hours",
+      "durationSeconds": 61,
+      "description": "MS2 shares his take on clinical hour minimums.",
+      "importedAt": "2026-07-08T16:20:00.000Z",
+      "processingStatus": "complete",
+      "errorMessage": null,
+      "checksum": "seed-checksum-clinical"
+    },
+    {
+      "id": "seed-src-mcat-reddit",
+      "type": "text",
+      "title": "r/MCAT: 3 months full-time or don't bother",
+      "creatorName": "u/520orBust",
+      "platform": "Reddit",
+      "sourceUrl": "https://www.reddit.com/r/MCAT/comments/3monthsfulltime",
+      "durationSeconds": null,
+      "description": "Highly upvoted thread arguing for short, intense dedicated prep.",
+      "importedAt": "2026-07-05T09:05:00.000Z",
+      "processingStatus": "complete",
+      "errorMessage": null,
+      "checksum": "seed-checksum-mcat-reddit"
+    },
+    {
+      "id": "seed-src-mcat-yt",
+      "type": "video",
+      "title": "Why I studied for the MCAT over 6 months (while working)",
+      "creatorName": "Dr. Lena Osei",
+      "platform": "YouTube",
+      "sourceUrl": "https://www.youtube.com/watch?v=mcat6months",
+      "durationSeconds": 748,
+      "description": "A physician reflects on stretching MCAT prep across two semesters.",
+      "importedAt": "2026-07-05T09:00:00.000Z",
+      "processingStatus": "complete",
+      "errorMessage": null,
+      "checksum": "seed-checksum-mcat-yt"
+    },
+    {
+      "id": "seed-src-prereq",
+      "type": "text",
+      "title": "AAMC: Premedical coursework requirements overview",
+      "creatorName": "AAMC",
+      "platform": "aamc.org",
+      "sourceUrl": "https://students-residents.aamc.org/premed-coursework",
+      "durationSeconds": null,
+      "description": "Official overview of common prerequisite coursework for US MD programs.",
+      "importedAt": "2026-07-02T11:00:00.000Z",
+      "processingStatus": "complete",
+      "errorMessage": null,
+      "checksum": "seed-checksum-prereq"
+    },
+    {
+      "id": "seed-src-research",
+      "type": "audio",
+      "title": "Getting into research with zero connections (podcast)",
+      "creatorName": "The Premed Years",
+      "platform": "Podcast",
+      "sourceUrl": "https://premedyears.example.com/episodes/research-zero-connections",
+      "durationSeconds": 1830,
+      "description": "Episode on cold-emailing PIs and what research output matters.",
+      "importedAt": "2026-06-28T08:30:00.000Z",
+      "processingStatus": "complete",
+      "errorMessage": null,
+      "checksum": "seed-checksum-research"
+    },
+    {
+      "id": "seed-src-lor",
+      "type": "video",
+      "title": "Ask for letters BEFORE you leave the class",
+      "creatorName": "@premedpriya",
+      "platform": "Instagram",
+      "sourceUrl": "https://www.instagram.com/reel/lortiming",
+      "durationSeconds": 45,
+      "description": "Reel on timing letter-of-recommendation asks.",
+      "importedAt": "2026-06-25T19:45:00.000Z",
+      "processingStatus": "complete",
+      "errorMessage": null,
+      "checksum": "seed-checksum-lor"
+    }
+  ],
+  "transcripts": [
+    {
+      "id": "seed-tr-clinical",
+      "sourceId": "seed-src-clinical",
+      "fullText": "Okay, real talk about clinical hours. Everyone asks me how many you need. I'm an MS2 now, so take this with a grain of salt. When I applied I had about 800 hours as an EMT. But honestly? You need at least 500 clinical hours to apply. That's the floor. Below that, adcoms are going to question whether you know what you're getting into. More important than the number though: it has to be real patient contact. Stocking shelves in a hospital gift shop does not count. And keep a journal after every shift — you will forget the patients that mattered by the time you write your personal statement.",
+      "segments": [
+        {
+          "startSeconds": 0,
+          "endSeconds": 9,
+          "text": "Okay, real talk about clinical hours. Everyone asks me how many you need."
+        },
+        {
+          "startSeconds": 9,
+          "endSeconds": 18,
+          "text": "I'm an MS2 now, so take this with a grain of salt. When I applied I had about 800 hours as an EMT."
+        },
+        {
+          "startSeconds": 18,
+          "endSeconds": 30,
+          "text": "But honestly? You need at least 500 clinical hours to apply. That's the floor."
+        },
+        {
+          "startSeconds": 30,
+          "endSeconds": 42,
+          "text": "Below that, adcoms are going to question whether you know what you're getting into."
+        },
+        {
+          "startSeconds": 42,
+          "endSeconds": 58,
+          "text": "More important than the number though: it has to be real patient contact. Stocking shelves in a hospital gift shop does not count."
+        },
+        {
+          "startSeconds": 58,
+          "endSeconds": 61,
+          "text": "And keep a journal after every shift — you will forget the patients that mattered by the time you write your personal statement."
+        }
+      ],
+      "language": "en",
+      "model": "mock-transcriber-v1",
+      "editedByUser": false
+    },
+    {
+      "id": "seed-tr-mcat-yt",
+      "sourceId": "seed-src-mcat-yt",
+      "fullText": "I get asked constantly whether you can prep for the MCAT while working full-time. I did, and it took me six months. Spreading content review across a longer runway kept me sane and let the material consolidate. Two hours on weekdays, six on weekends. If you cram it into a summer while exhausted, your practice scores will lie to you.",
+      "segments": [
+        {
+          "startSeconds": 12,
+          "endSeconds": 34,
+          "text": "I get asked constantly whether you can prep for the MCAT while working full-time. I did, and it took me six months."
+        },
+        {
+          "startSeconds": 34,
+          "endSeconds": 61,
+          "text": "Spreading content review across a longer runway kept me sane and let the material consolidate. Two hours on weekdays, six on weekends."
+        },
+        {
+          "startSeconds": 61,
+          "endSeconds": 80,
+          "text": "If you cram it into a summer while exhausted, your practice scores will lie to you."
+        }
+      ],
+      "language": "en",
+      "model": "mock-transcriber-v1",
+      "editedByUser": false
+    }
+  ],
+  "claims": [
+    {
+      "id": "seed-claim-500hours",
+      "sourceId": "seed-src-clinical",
+      "canonicalText": "Applicants need at least 500 clinical hours to apply.",
+      "originalText": "You need at least 500 clinical hours to apply. That's the floor.",
+      "timestampStart": 18,
+      "timestampEnd": 30,
+      "itemType": "advice",
+      "claimType": "recommendation",
+      "scope": [
+        "applicant_specific"
+      ],
+      "authorityType": "medical_student",
+      "evidenceLevel": "anecdotal",
+      "verificationStatus": "unverified",
+      "freshnessStatus": "probably_current",
+      "confidence": 0.55,
+      "pillarId": "clinical-experience",
+      "topic": "Clinical hour thresholds",
+      "tags": [
+        "numerical",
+        "hours"
+      ],
+      "suggestedActions": [
+        {
+          "title": "Audit current clinical hours",
+          "description": "Evaluate hours so far for quality, direct patient interaction, continuity, and reflection — not just the count."
+        }
+      ],
+      "status": "unsorted",
+      "createdAt": "2026-06-30T12:00:00.000Z",
+      "updatedAt": "2026-06-30T12:00:00.000Z"
+    },
+    {
+      "id": "seed-claim-finance-wci",
+      "sourceId": null,
+      "canonicalText": "The White Coat Investor blog and book cover physician-specific debt, insurance, and investing basics.",
+      "originalText": "",
+      "timestampStart": null,
+      "timestampEnd": null,
+      "itemType": "resource",
+      "claimType": "fact",
+      "scope": [
+        "universal"
+      ],
+      "authorityType": "financial_professional",
+      "evidenceLevel": "professional_experience",
+      "verificationStatus": "community_supported",
+      "freshnessStatus": "probably_current",
+      "confidence": 0.9,
+      "pillarId": "financial-planning",
+      "topic": "Learning resources",
+      "tags": [
+        "resource",
+        "debt",
+        "investing"
+      ],
+      "suggestedActions": [],
+      "status": "organized",
+      "createdAt": "2026-06-30T12:00:00.000Z",
+      "updatedAt": "2026-06-30T12:00:00.000Z"
+    },
+    {
+      "id": "seed-claim-journal",
+      "sourceId": "seed-src-clinical",
+      "canonicalText": "Keep a reflection journal after every clinical shift.",
+      "originalText": "Keep a journal after every shift — you will forget the patients that mattered by the time you write your personal statement.",
+      "timestampStart": 58,
+      "timestampEnd": 61,
+      "itemType": "advice",
+      "claimType": "recommendation",
+      "scope": [
+        "universal"
+      ],
+      "authorityType": "medical_student",
+      "evidenceLevel": "professional_experience",
+      "verificationStatus": "unverified",
+      "freshnessStatus": "current",
+      "confidence": 0.85,
+      "pillarId": "clinical-experience",
+      "topic": "Reflection habits",
+      "tags": [
+        "reflection",
+        "story-bank"
+      ],
+      "suggestedActions": [],
+      "status": "unsorted",
+      "createdAt": "2026-06-30T12:00:00.000Z",
+      "updatedAt": "2026-06-30T12:00:00.000Z"
+    },
+    {
+      "id": "seed-claim-lor-timing",
+      "sourceId": "seed-src-lor",
+      "canonicalText": "Ask for recommendation letters while the relationship is active, not years later.",
+      "originalText": "Ask before you leave the class. Your professor remembers you right now — in two years you're a name on a roster.",
+      "timestampStart": 8,
+      "timestampEnd": 22,
+      "itemType": "advice",
+      "claimType": "recommendation",
+      "scope": [
+        "universal"
+      ],
+      "authorityType": "applicant",
+      "evidenceLevel": "community_consensus",
+      "verificationStatus": "community_supported",
+      "freshnessStatus": "current",
+      "confidence": 0.9,
+      "pillarId": "letters",
+      "topic": "When to ask",
+      "tags": [
+        "timing"
+      ],
+      "suggestedActions": [
+        {
+          "title": "Ask Dr. Rivera for a letter before June",
+          "description": "Organic chemistry relationship is active now; ask before the semester ends."
+        }
+      ],
+      "status": "organized",
+      "createdAt": "2026-06-30T12:00:00.000Z",
+      "updatedAt": "2026-06-30T12:00:00.000Z"
+    },
+    {
+      "id": "seed-claim-mcat-conflict",
+      "sourceId": null,
+      "canonicalText": "Sources disagree on MCAT timeline: a long part-time runway versus short full-time dedicated prep. Both can work; the fit depends on work obligations, burnout risk, and content retention.",
+      "originalText": "",
+      "timestampStart": null,
+      "timestampEnd": null,
+      "itemType": "concept",
+      "claimType": "fact",
+      "scope": [
+        "universal"
+      ],
+      "authorityType": "unknown_or_self_reported",
+      "evidenceLevel": "unknown",
+      "verificationStatus": "disputed",
+      "freshnessStatus": "current",
+      "confidence": 0.9,
+      "pillarId": "mcat",
+      "topic": "Study timeline",
+      "tags": [
+        "conflict"
+      ],
+      "suggestedActions": [],
+      "status": "organized",
+      "createdAt": "2026-06-30T12:00:00.000Z",
+      "updatedAt": "2026-06-30T12:00:00.000Z"
+    },
+    {
+      "id": "seed-claim-mcat-long",
+      "sourceId": "seed-src-mcat-yt",
+      "canonicalText": "Spread MCAT preparation over about six months if working or in classes.",
+      "originalText": "I get asked constantly whether you can prep for the MCAT while working full-time. I did, and it took me six months.",
+      "timestampStart": 12,
+      "timestampEnd": 34,
+      "itemType": "advice",
+      "claimType": "strategy",
+      "scope": [
+        "applicant_specific",
+        "financial_situation_specific"
+      ],
+      "authorityType": "physician",
+      "evidenceLevel": "professional_experience",
+      "verificationStatus": "disputed",
+      "freshnessStatus": "current",
+      "confidence": 0.8,
+      "pillarId": "mcat",
+      "topic": "Study timeline",
+      "tags": [
+        "schedule",
+        "working-applicants"
+      ],
+      "suggestedActions": [],
+      "status": "organized",
+      "createdAt": "2026-06-30T12:00:00.000Z",
+      "updatedAt": "2026-06-30T12:00:00.000Z"
+    },
+    {
+      "id": "seed-claim-mcat-short",
+      "sourceId": "seed-src-mcat-reddit",
+      "canonicalText": "Study for the MCAT in roughly three months of full-time dedicated prep rather than a long stretched timeline.",
+      "originalText": "3 months full-time or don't bother. Long timelines just mean you forget the first chapters by test day.",
+      "timestampStart": null,
+      "timestampEnd": null,
+      "itemType": "advice",
+      "claimType": "opinion",
+      "scope": [
+        "applicant_specific"
+      ],
+      "authorityType": "premed_student",
+      "evidenceLevel": "anecdotal",
+      "verificationStatus": "disputed",
+      "freshnessStatus": "current",
+      "confidence": 0.75,
+      "pillarId": "mcat",
+      "topic": "Study timeline",
+      "tags": [
+        "schedule",
+        "dedicated-prep"
+      ],
+      "suggestedActions": [],
+      "status": "organized",
+      "createdAt": "2026-06-30T12:00:00.000Z",
+      "updatedAt": "2026-06-30T12:00:00.000Z"
+    },
+    {
+      "id": "seed-claim-no-universal-min",
+      "sourceId": "seed-src-clinical",
+      "canonicalText": "No universal minimum clinical hour requirement exists; treat quoted thresholds as one person's heuristic.",
+      "originalText": "You need at least 500 clinical hours to apply.",
+      "timestampStart": 18,
+      "timestampEnd": 30,
+      "itemType": "warning",
+      "claimType": "warning",
+      "scope": [
+        "universal"
+      ],
+      "authorityType": "unknown_or_self_reported",
+      "evidenceLevel": "unknown",
+      "verificationStatus": "unverified",
+      "freshnessStatus": "current",
+      "confidence": 0.7,
+      "pillarId": "clinical-experience",
+      "topic": "Clinical hour thresholds",
+      "tags": [
+        "numerical",
+        "no-official-standard"
+      ],
+      "suggestedActions": [],
+      "status": "unsorted",
+      "createdAt": "2026-06-30T12:00:00.000Z",
+      "updatedAt": "2026-06-30T12:00:00.000Z"
+    },
+    {
+      "id": "seed-claim-patient-contact",
+      "sourceId": "seed-src-clinical",
+      "canonicalText": "Clinical experience must involve real patient contact to count.",
+      "originalText": "It has to be real patient contact. Stocking shelves in a hospital gift shop does not count.",
+      "timestampStart": 42,
+      "timestampEnd": 58,
+      "itemType": "concept",
+      "claimType": "strategy",
+      "scope": [
+        "universal"
+      ],
+      "authorityType": "medical_student",
+      "evidenceLevel": "community_consensus",
+      "verificationStatus": "community_supported",
+      "freshnessStatus": "current",
+      "confidence": 0.82,
+      "pillarId": "clinical-experience",
+      "topic": "Clinical depth and continuity",
+      "tags": [
+        "quality-over-quantity"
+      ],
+      "suggestedActions": [],
+      "status": "unsorted",
+      "createdAt": "2026-06-30T12:00:00.000Z",
+      "updatedAt": "2026-06-30T12:00:00.000Z"
+    },
+    {
+      "id": "seed-claim-prereq-bio",
+      "sourceId": "seed-src-prereq",
+      "canonicalText": "Most US MD programs require one year of biology with laboratory work.",
+      "originalText": "Most medical schools require one academic year of biology with laboratory experience.",
+      "timestampStart": null,
+      "timestampEnd": null,
+      "itemType": "evidence",
+      "claimType": "fact",
+      "scope": [
+        "country_specific"
+      ],
+      "authorityType": "official_organization",
+      "evidenceLevel": "official",
+      "verificationStatus": "officially_verified",
+      "freshnessStatus": "current",
+      "confidence": 0.97,
+      "pillarId": "prerequisites",
+      "topic": "Biology requirement",
+      "tags": [
+        "official",
+        "coursework"
+      ],
+      "suggestedActions": [],
+      "status": "organized",
+      "createdAt": "2026-06-30T12:00:00.000Z",
+      "updatedAt": "2026-06-30T12:00:00.000Z"
+    },
+    {
+      "id": "seed-claim-ps-growth",
+      "sourceId": null,
+      "canonicalText": "Show growth through patient stories rather than listing achievements.",
+      "originalText": "",
+      "timestampStart": null,
+      "timestampEnd": null,
+      "itemType": "concept",
+      "claimType": "strategy",
+      "scope": [
+        "universal"
+      ],
+      "authorityType": "advisor",
+      "evidenceLevel": "community_consensus",
+      "verificationStatus": "community_supported",
+      "freshnessStatus": "current",
+      "confidence": 0.85,
+      "pillarId": "personal-statement",
+      "topic": "Narrative structure",
+      "tags": [
+        "essays"
+      ],
+      "suggestedActions": [],
+      "status": "organized",
+      "createdAt": "2026-06-30T12:00:00.000Z",
+      "updatedAt": "2026-06-30T12:00:00.000Z"
+    },
+    {
+      "id": "seed-claim-ps-reflection",
+      "sourceId": null,
+      "canonicalText": "My hospice patient Ms. R taught me that presence matters more than procedure — a moment I want to open my personal statement with.",
+      "originalText": "",
+      "timestampStart": null,
+      "timestampEnd": null,
+      "itemType": "reflection",
+      "claimType": "anecdote",
+      "scope": [
+        "applicant_specific"
+      ],
+      "authorityType": "premed_student",
+      "evidenceLevel": "anecdotal",
+      "verificationStatus": "unverified",
+      "freshnessStatus": "current",
+      "confidence": 1,
+      "pillarId": "personal-statement",
+      "topic": "Story bank",
+      "tags": [
+        "story-bank",
+        "hospice"
+      ],
+      "suggestedActions": [],
+      "status": "organized",
+      "createdAt": "2026-06-30T12:00:00.000Z",
+      "updatedAt": "2026-06-30T12:00:00.000Z"
+    },
+    {
+      "id": "seed-claim-research-coldemail",
+      "sourceId": "seed-src-research",
+      "canonicalText": "Cold-email principal investigators with a specific reference to their recent work and a clear, small ask.",
+      "originalText": "Don't send a generic template. Mention the paper of theirs you actually read and ask for fifteen minutes.",
+      "timestampStart": 312,
+      "timestampEnd": 356,
+      "itemType": "advice",
+      "claimType": "strategy",
+      "scope": [
+        "universal"
+      ],
+      "authorityType": "physician",
+      "evidenceLevel": "professional_experience",
+      "verificationStatus": "community_supported",
+      "freshnessStatus": "current",
+      "confidence": 0.88,
+      "pillarId": "research",
+      "topic": "Finding a lab",
+      "tags": [
+        "cold-email",
+        "networking"
+      ],
+      "suggestedActions": [],
+      "status": "organized",
+      "createdAt": "2026-06-30T12:00:00.000Z",
+      "updatedAt": "2026-06-30T12:00:00.000Z"
+    },
+    {
+      "id": "seed-claim-research-pubs",
+      "sourceId": "seed-src-research",
+      "canonicalText": "Publications are not required for MD applicants; sustained engagement matters more.",
+      "originalText": "The vast majority of successful applicants have zero publications. What committees want is evidence you engaged with the process.",
+      "timestampStart": 1105,
+      "timestampEnd": 1152,
+      "itemType": "advice",
+      "claimType": "fact",
+      "scope": [
+        "country_specific"
+      ],
+      "authorityType": "physician",
+      "evidenceLevel": "community_consensus",
+      "verificationStatus": "community_supported",
+      "freshnessStatus": "current",
+      "confidence": 0.86,
+      "pillarId": "research",
+      "topic": "Research output expectations",
+      "tags": [
+        "publications"
+      ],
+      "suggestedActions": [],
+      "status": "organized",
+      "createdAt": "2026-06-30T12:00:00.000Z",
+      "updatedAt": "2026-06-30T12:00:00.000Z"
+    }
+  ],
+  "relationships": [
+    {
+      "id": "seed-rel-mcat-conflict",
+      "fromClaimId": "seed-claim-mcat-long",
+      "toClaimId": "seed-claim-mcat-short",
+      "relationshipType": "contradicts",
+      "note": "Long part-time runway vs. short full-time dedicated prep.",
+      "userConfirmed": true
+    },
+    {
+      "id": "seed-rel-conflict-a",
+      "fromClaimId": "seed-claim-mcat-conflict",
+      "toClaimId": "seed-claim-mcat-long",
+      "relationshipType": "related_to",
+      "note": null,
+      "userConfirmed": true
+    },
+    {
+      "id": "seed-rel-conflict-b",
+      "fromClaimId": "seed-claim-mcat-conflict",
+      "toClaimId": "seed-claim-mcat-short",
+      "relationshipType": "related_to",
+      "note": null,
+      "userConfirmed": true
+    },
+    {
+      "id": "seed-rel-reflection",
+      "fromClaimId": "seed-claim-ps-reflection",
+      "toClaimId": "seed-claim-ps-growth",
+      "relationshipType": "related_to",
+      "note": "Reflection supports the growth-narrative concept.",
+      "userConfirmed": true
+    }
+  ],
+  "actions": [
+    {
+      "id": "seed-action-lor",
+      "derivedFromClaimId": "seed-claim-lor-timing",
+      "title": "Ask Dr. Rivera for a letter before June",
+      "description": "Organic chemistry relationship is active now; ask before the semester ends. Bring a résumé and a draft of the personal statement.",
+      "status": "open",
+      "priority": "high",
+      "dueAt": "2026-05-31T00:00:00.000Z",
+      "createdAt": "2026-06-30T12:00:00.000Z"
+    }
+  ],
+  "pillars": [
+    {
+      "id": "north-star",
+      "name": "North Star / Overall Strategy",
+      "shortName": "North Star",
+      "description": "What schools evaluate, holistic review, long-term planning.",
+      "icon": "Compass",
+      "accent": "#6B6A9F",
+      "sortOrder": 1,
+      "keywords": [
+        "holistic",
+        "strategy",
+        "narrative",
+        "competenc",
+        "box-check",
+        "identity",
+        "long-term",
+        "big picture"
+      ]
+    },
+    {
+      "id": "academics-gpa",
+      "name": "Academics and GPA",
+      "shortName": "Academics & GPA",
+      "description": "Course performance, GPA trends, academic recovery.",
+      "icon": "GraduationCap",
+      "accent": "#A8763E",
+      "sortOrder": 2,
+      "keywords": [
+        "gpa",
+        "grade",
+        "transcript",
+        "course load",
+        "withdrawal",
+        "pass/fail",
+        "post-bacc",
+        "smp",
+        "academic"
+      ]
+    },
+    {
+      "id": "prerequisites",
+      "name": "Prerequisites and Course Planning",
+      "shortName": "Prerequisites",
+      "description": "Required coursework and how to plan it.",
+      "icon": "ListChecks",
+      "accent": "#8B8552",
+      "sortOrder": 3,
+      "keywords": [
+        "prerequisite",
+        "prereq",
+        "biology",
+        "chemistry",
+        "organic",
+        "physics",
+        "biochem",
+        "course plan",
+        "ap credit",
+        "community college"
+      ]
+    },
+    {
+      "id": "mcat",
+      "name": "MCAT",
+      "shortName": "MCAT",
+      "description": "Content review, practice exams, scheduling, retakes.",
+      "icon": "Timer",
+      "accent": "#4E7D96",
+      "sortOrder": 4,
+      "keywords": [
+        "mcat",
+        "cars",
+        "full-length",
+        "practice exam",
+        "content review",
+        "anki",
+        "uworld",
+        "aamc",
+        "retake",
+        "study schedule"
+      ]
+    },
+    {
+      "id": "clinical-experience",
+      "name": "Clinical Experience",
+      "shortName": "Clinical",
+      "description": "Patient-facing experience: what counts and what matters.",
+      "icon": "Stethoscope",
+      "accent": "#9C4A34",
+      "sortOrder": 5,
+      "keywords": [
+        "clinical",
+        "patient",
+        "emt",
+        "cna",
+        "scribe",
+        "medical assistant",
+        "hospice",
+        "hospital volunteer",
+        "clinical hours"
+      ]
+    },
+    {
+      "id": "shadowing",
+      "name": "Shadowing",
+      "shortName": "Shadowing",
+      "description": "Observing physicians across specialties.",
+      "icon": "Eye",
+      "accent": "#77628C",
+      "sortOrder": 6,
+      "keywords": [
+        "shadow",
+        "shadowing",
+        "observe",
+        "physician",
+        "specialty exposure"
+      ]
+    },
+    {
+      "id": "nonclinical-service",
+      "name": "Nonclinical Service",
+      "shortName": "Service",
+      "description": "Community service and work with underserved populations.",
+      "icon": "HeartHandshake",
+      "accent": "#4F8A6B",
+      "sortOrder": 7,
+      "keywords": [
+        "volunteer",
+        "service",
+        "community",
+        "underserved",
+        "nonclinical",
+        "food bank",
+        "tutor"
+      ]
+    },
+    {
+      "id": "research",
+      "name": "Research",
+      "shortName": "Research",
+      "description": "Labs, PIs, posters, publications, intellectual contribution.",
+      "icon": "FlaskConical",
+      "accent": "#3E7276",
+      "sortOrder": 8,
+      "keywords": [
+        "research",
+        "lab",
+        "pi ",
+        "publication",
+        "poster",
+        "abstract",
+        "principal investigator",
+        "md/phd",
+        "journal"
+      ]
+    },
+    {
+      "id": "leadership",
+      "name": "Leadership and Extracurriculars",
+      "shortName": "Leadership",
+      "description": "Initiative, organizations, employment, hobbies.",
+      "icon": "Users",
+      "accent": "#8F5D3B",
+      "sortOrder": 9,
+      "keywords": [
+        "leadership",
+        "club",
+        "organization",
+        "president",
+        "founder",
+        "extracurricular",
+        "hobby",
+        "athletics",
+        "job"
+      ]
+    },
+    {
+      "id": "letters",
+      "name": "Letters of Recommendation",
+      "shortName": "Letters",
+      "description": "Choosing recommenders, asking well, committee letters.",
+      "icon": "Mail",
+      "accent": "#5C7EA3",
+      "sortOrder": 10,
+      "keywords": [
+        "letter",
+        "recommendation",
+        "recommender",
+        "committee letter",
+        "lor",
+        "professor relationship"
+      ]
+    },
+    {
+      "id": "personal-statement",
+      "name": "Personal Statement and Story Bank",
+      "shortName": "Personal Statement",
+      "description": "Why medicine, narrative, reflection, story material.",
+      "icon": "PenLine",
+      "accent": "#A3557C",
+      "sortOrder": 11,
+      "keywords": [
+        "personal statement",
+        "essay",
+        "why medicine",
+        "story",
+        "narrative",
+        "reflection",
+        "draft"
+      ]
+    },
+    {
+      "id": "work-activities",
+      "name": "Work and Activities",
+      "shortName": "Work & Activities",
+      "description": "Activity descriptions and most-meaningful entries.",
+      "icon": "ClipboardList",
+      "accent": "#6E7F4D",
+      "sortOrder": 12,
+      "keywords": [
+        "work and activities",
+        "activity description",
+        "most meaningful",
+        "character limit",
+        "quantify"
+      ]
+    },
+    {
+      "id": "school-list",
+      "name": "School List",
+      "shortName": "School List",
+      "description": "Mission fit, statistics, geography, MD vs DO.",
+      "icon": "MapPin",
+      "accent": "#46698C",
+      "sortOrder": 13,
+      "keywords": [
+        "school list",
+        "mission fit",
+        "msar",
+        "reach",
+        "target",
+        "safety",
+        "md vs do",
+        "residency requirement",
+        "in-state"
+      ]
+    },
+    {
+      "id": "application-systems",
+      "name": "AMCAS, AACOMAS, and TMDSAS",
+      "shortName": "Applications",
+      "description": "Primary application systems, timing, verification.",
+      "icon": "FileText",
+      "accent": "#746354",
+      "sortOrder": 14,
+      "keywords": [
+        "amcas",
+        "aacomas",
+        "tmdsas",
+        "primary application",
+        "verification",
+        "submit early",
+        "transcript entry"
+      ]
+    },
+    {
+      "id": "secondaries",
+      "name": "Secondaries",
+      "shortName": "Secondaries",
+      "description": "Prewriting, common prompts, turnaround time.",
+      "icon": "Files",
+      "accent": "#AD6A4E",
+      "sortOrder": 15,
+      "keywords": [
+        "secondary",
+        "secondaries",
+        "prewrite",
+        "diversity essay",
+        "why us",
+        "turnaround"
+      ]
+    },
+    {
+      "id": "preview-casper",
+      "name": "PREview and Casper",
+      "shortName": "PREview & Casper",
+      "description": "Situational-judgment tests: prep, timing, scoring.",
+      "icon": "MessagesSquare",
+      "accent": "#5E8073",
+      "sortOrder": 16,
+      "keywords": [
+        "casper",
+        "preview",
+        "situational judgment",
+        "sjt"
+      ]
+    },
+    {
+      "id": "interviews",
+      "name": "Interviews",
+      "shortName": "Interviews",
+      "description": "Traditional, MMI, virtual; ethics and communication.",
+      "icon": "Mic",
+      "accent": "#7D4E64",
+      "sortOrder": 17,
+      "keywords": [
+        "interview",
+        "mmi",
+        "mock interview",
+        "behavioral question",
+        "ethics scenario"
+      ]
+    },
+    {
+      "id": "financial-planning",
+      "name": "Financial Planning",
+      "shortName": "Finance",
+      "description": "Application costs, debt, loans, physician finance.",
+      "icon": "Wallet",
+      "accent": "#57794E",
+      "sortOrder": 18,
+      "keywords": [
+        "financial",
+        "finance",
+        "debt",
+        "loan",
+        "pslf",
+        "scholarship",
+        "fee assistance",
+        "budget",
+        "invest",
+        "tuition",
+        "money"
+      ]
+    },
+    {
+      "id": "gap-years",
+      "name": "Gap Years and Reinvention",
+      "shortName": "Gap Years",
+      "description": "Productive gap years, reapplication, academic repair.",
+      "icon": "RefreshCw",
+      "accent": "#8C6D9C",
+      "sortOrder": 19,
+      "keywords": [
+        "gap year",
+        "reapply",
+        "reapplication",
+        "reinvention",
+        "nontraditional",
+        "career change"
+      ]
+    },
+    {
+      "id": "choosing-school",
+      "name": "Choosing a Medical School",
+      "shortName": "Choosing a School",
+      "description": "Comparing acceptances: cost, curriculum, fit.",
+      "icon": "Scale",
+      "accent": "#B78A3C",
+      "sortOrder": 20,
+      "keywords": [
+        "choosing between",
+        "acceptance",
+        "second look",
+        "plan to enroll",
+        "commit to enroll",
+        "financial aid offer",
+        "match list"
+      ]
+    }
+  ]
+}
+"
+`;
