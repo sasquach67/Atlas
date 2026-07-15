@@ -223,6 +223,31 @@ export interface SavedLayout {
   updatedAt: string;
 }
 
+export const GUIDE_STATUSES = ["draft", "current", "stale"] as const;
+export type GuideStatus = (typeof GUIDE_STATUSES)[number];
+
+export interface Guide {
+  id: string;
+  type: "atlas";
+  title: string;
+  status: GuideStatus;
+  version: number;
+  generatedAt: string | null;
+}
+
+export interface GuideSection {
+  id: string;
+  guideId: string;
+  pillarId: string;
+  topic: string;
+  sortOrder: number;
+  bodyMarkdown: string;
+  supportingClaimIds: string[];
+  unresolvedContradictionIds: string[];
+  generatedAt: string;
+  stale: boolean;
+}
+
 export interface ClaimSearchFilters {
   pillarId?: string;
   claimType?: ClaimType;

@@ -4,6 +4,7 @@ import { getRepos } from "@/db";
 import { jsonError, zodError } from "@/lib/api";
 import { CLAIM_STATUSES } from "@/lib/types";
 import { PILLAR_IDS } from "@/modules/taxonomy";
+import { markGuideStaleForClaim } from "@/modules/guides";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -33,7 +34,13 @@ export async function PATCH(request: Request) {
     }
   }
   for (const { id, ...patch } of parsed.data.updates) {
-    claims.push(repos.claims.update(id, patch));
+    const before = repos.claims.getById(id)!;
+    const updated = repos.claims.update(id, patch);
+    if (before.status === "organized" || updated.status === "organized") {
+      markGuideStaleForClaim(repos, before);
+      markGuideStaleForClaim(repos, updated);
+    }
+    claims.push(updated);
   }
   return NextResponse.json({ claims });
 }

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getRepos } from "@/db";
 import { jsonError, zodError } from "@/lib/api";
+import { markGuideStaleForClaim } from "@/modules/guides";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -44,6 +45,7 @@ export async function POST(request: Request, segmentData: { params: Params }) {
       const [survivor, merged] = from.confidence >= to.confidence ? [from, to] : [to, from];
       const previousStatus = merged.status;
       repos.claims.update(merged.id, { status: "rejected" });
+      if (previousStatus === "organized") markGuideStaleForClaim(repos, merged);
       repos.relationships.update(id, {
         userConfirmed: true,
         // Point survivor -> merged so the trail reads "X supersedes Y".
@@ -65,8 +67,9 @@ export async function POST(request: Request, segmentData: { params: Params }) {
       if (!restoreClaimId || !restoreStatus) {
         return jsonError("undo_merge needs restoreClaimId and restoreStatus.", 400);
       }
-      repos.claims.update(restoreClaimId, { status: restoreStatus });
+      const restored = repos.claims.update(restoreClaimId, { status: restoreStatus });
       repos.relationships.update(id, { userConfirmed: false });
+      if (restoreStatus === "organized") markGuideStaleForClaim(repos, restored);
       return NextResponse.json({ resolved: "undo_merge" });
     }
     case "keep_both": {

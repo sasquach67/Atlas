@@ -85,6 +85,30 @@ CREATE TABLE IF NOT EXISTS action_items (
   created_at TEXT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS guides (
+  id TEXT PRIMARY KEY,
+  type TEXT NOT NULL DEFAULT 'atlas',
+  title TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'draft',
+  version INTEGER NOT NULL DEFAULT 0,
+  generated_at TEXT
+);
+
+CREATE TABLE IF NOT EXISTS guide_sections (
+  id TEXT PRIMARY KEY,
+  guide_id TEXT NOT NULL REFERENCES guides(id) ON DELETE CASCADE,
+  pillar_id TEXT NOT NULL,
+  topic TEXT NOT NULL,
+  sort_order INTEGER NOT NULL DEFAULT 0,
+  body_markdown TEXT NOT NULL,
+  supporting_claim_ids TEXT NOT NULL DEFAULT '[]',
+  unresolved_contradiction_ids TEXT NOT NULL DEFAULT '[]',
+  generated_at TEXT NOT NULL,
+  stale INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE INDEX IF NOT EXISTS idx_guide_sections_guide ON guide_sections(guide_id);
+
 -- Embedding cache for duplicate detection. This is the pgvector seam: on
 -- Postgres, vector becomes a pgvector column and cosine moves into SQL.
 CREATE TABLE IF NOT EXISTS claim_embeddings (

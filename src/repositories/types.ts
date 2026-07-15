@@ -2,6 +2,8 @@ import type {
   ActionItem,
   Claim,
   ClaimSearchFilters,
+  Guide,
+  GuideSection,
   Relationship,
   SavedLayout,
   Source,
@@ -59,6 +61,15 @@ export interface ActionRepository {
   delete(id: string): void;
 }
 
+export interface GuideRepository {
+  getAtlasGuide(): Guide | null;
+  upsertAtlasGuide(patch: Partial<Omit<Guide, "id" | "type">>): Guide;
+  listSections(guideId: string): GuideSection[];
+  replaceSection(section: GuideSection): void;
+  deleteSectionsNotIn(guideId: string, keepIds: string[]): void;
+  markSectionsStale(guideId: string, pillarId: string, topic?: string): number;
+}
+
 export interface EmbeddingRepository {
   getMany(claimIds: string[]): { claimId: string; model: string; vector: number[]; textHash: string }[];
   upsert(embedding: { claimId: string; model: string; vector: number[]; textHash: string }): void;
@@ -78,4 +89,5 @@ export interface Repositories {
   actions: ActionRepository;
   layouts: LayoutRepository;
   embeddings: EmbeddingRepository;
+  guides: GuideRepository;
 }

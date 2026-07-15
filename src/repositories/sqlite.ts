@@ -3,6 +3,8 @@ import type {
   ActionItem,
   Claim,
   ClaimSearchFilters,
+  Guide,
+  GuideSection,
   Relationship,
   SavedLayout,
   Source,
@@ -13,6 +15,7 @@ import type {
   ActionRepository,
   ClaimRepository,
   EmbeddingRepository,
+  GuideRepository,
   LayoutRepository,
   RelationshipRepository,
   Repositories,
@@ -615,6 +618,123 @@ class SqliteLayoutRepository implements LayoutRepository {
   }
 }
 
+const ATLAS_GUIDE_ID = "atlas-guide";
+
+class SqliteGuideRepository implements GuideRepository {
+  constructor(private db: Database) {}
+
+  private rowToGuide(row: Row): Guide {
+    return {
+      id: str(row, "id"),
+      type: "atlas",
+      title: str(row, "title"),
+      status: str(row, "status") as Guide["status"],
+      version: Number(row["version"]),
+      generatedAt: strOrNull(row, "generated_at"),
+    };
+  }
+
+  private rowToSection(row: Row): GuideSection {
+    return {
+      id: str(row, "id"),
+      guideId: str(row, "guide_id"),
+      pillarId: str(row, "pillar_id"),
+      topic: str(row, "topic"),
+      sortOrder: Number(row["sort_order"]),
+      bodyMarkdown: str(row, "body_markdown"),
+      supportingClaimIds: json(row, "supporting_claim_ids", []),
+      unresolvedContradictionIds: json(row, "unresolved_contradiction_ids", []),
+      generatedAt: str(row, "generated_at"),
+      stale: Number(row["stale"]) === 1,
+    };
+  }
+
+  getAtlasGuide(): Guide | null {
+    const row = this.db.prepare(`SELECT * FROM guides WHERE id = ?`).get(ATLAS_GUIDE_ID) as
+      | Row
+      | undefined;
+    return row ? this.rowToGuide(row) : null;
+  }
+
+  upsertAtlasGuide(patch: Partial<Omit<Guide, "id" | "type">>): Guide {
+    const existing = this.getAtlasGuide();
+    const merged: Guide = {
+      id: ATLAS_GUIDE_ID,
+      type: "atlas",
+      title: patch.title ?? existing?.title ?? "The Premed Atlas Guide",
+      status: patch.status ?? existing?.status ?? "draft",
+      version: patch.version ?? existing?.version ?? 0,
+      generatedAt: patch.generatedAt ?? existing?.generatedAt ?? null,
+    };
+    this.db
+      .prepare(
+        `INSERT INTO guides (id, type, title, status, version, generated_at)
+         VALUES (?, 'atlas', ?, ?, ?, ?)
+         ON CONFLICT(id) DO UPDATE SET title = excluded.title, status = excluded.status, version = excluded.version, generated_at = excluded.generated_at`,
+      )
+      .run(merged.id, merged.title, merged.status, merged.version, merged.generatedAt);
+    return merged;
+  }
+
+  listSections(guideId: string): GuideSection[] {
+    const rows = this.db
+      .prepare(`SELECT * FROM guide_sections WHERE guide_id = ? ORDER BY sort_order ASC`)
+      .all(guideId) as Row[];
+    return rows.map((row) => this.rowToSection(row));
+  }
+
+  replaceSection(section: GuideSection): void {
+    this.db
+      .prepare(
+        `INSERT INTO guide_sections (id, guide_id, pillar_id, topic, sort_order, body_markdown, supporting_claim_ids, unresolved_contradiction_ids, generated_at, stale)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+         ON CONFLICT(id) DO UPDATE SET pillar_id = excluded.pillar_id, topic = excluded.topic, sort_order = excluded.sort_order, body_markdown = excluded.body_markdown, supporting_claim_ids = excluded.supporting_claim_ids, unresolved_contradiction_ids = excluded.unresolved_contradiction_ids, generated_at = excluded.generated_at, stale = excluded.stale`,
+      )
+      .run(
+        section.id,
+        section.guideId,
+        section.pillarId,
+        section.topic,
+        section.sortOrder,
+        section.bodyMarkdown,
+        JSON.stringify(section.supportingClaimIds),
+        JSON.stringify(section.unresolvedContradictionIds),
+        section.generatedAt,
+        section.stale ? 1 : 0,
+      );
+  }
+
+  deleteSectionsNotIn(guideId: string, keepIds: string[]): void {
+    if (keepIds.length === 0) {
+      this.db.prepare(`DELETE FROM guide_sections WHERE guide_id = ?`).run(guideId);
+      return;
+    }
+    this.db
+      .prepare(
+        `DELETE FROM guide_sections WHERE guide_id = ? AND id NOT IN (${keepIds
+          .map(() => "?")
+          .join(", ")})`,
+      )
+      .run(guideId, ...keepIds);
+  }
+
+  markSectionsStale(guideId: string, pillarId: string, topic?: string): number {
+    const result = topic
+      ? this.db
+          .prepare(
+            `UPDATE guide_sections SET stale = 1 WHERE guide_id = ? AND pillar_id = ? AND topic = ?`,
+          )
+          .run(guideId, pillarId, topic)
+      : this.db
+          .prepare(`UPDATE guide_sections SET stale = 1 WHERE guide_id = ? AND pillar_id = ?`)
+          .run(guideId, pillarId);
+    if (result.changes > 0) {
+      this.db.prepare(`UPDATE guides SET status = 'stale' WHERE id = ?`).run(guideId);
+    }
+    return result.changes;
+  }
+}
+
 class SqliteEmbeddingRepository implements EmbeddingRepository {
   constructor(private db: Database) {}
 
@@ -659,5 +779,6 @@ export function createRepositories(db: Database): Repositories {
     actions: new SqliteActionRepository(db),
     layouts: new SqliteLayoutRepository(db),
     embeddings: new SqliteEmbeddingRepository(db),
+    guides: new SqliteGuideRepository(db),
   };
 }

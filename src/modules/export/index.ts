@@ -1,6 +1,14 @@
-import type { ActionItem, Claim, Relationship, Source, Transcript } from "@/lib/types";
+import type {
+  ActionItem,
+  Claim,
+  Guide,
+  GuideSection,
+  Relationship,
+  Source,
+  Transcript,
+} from "@/lib/types";
 import { formatTimestamp, humanize } from "@/lib/format";
-import { PILLARS, type Pillar } from "@/modules/taxonomy";
+import { getPillar, PILLARS, type Pillar } from "@/modules/taxonomy";
 import type { Repositories } from "@/repositories/types";
 
 export type AtlasExportData = {
@@ -12,6 +20,7 @@ export type AtlasExportData = {
   relationships: Relationship[];
   actions: ActionItem[];
   pillars: Pillar[];
+  guide: (Guide & { sections: GuideSection[] }) | null;
 };
 
 export function buildExportData(
@@ -30,6 +39,10 @@ export function buildExportData(
     relationships: repos.relationships.list(),
     actions: repos.actions.list(),
     pillars: PILLARS,
+    guide: (() => {
+      const guide = repos.guides.getAtlasGuide();
+      return guide ? { ...guide, sections: repos.guides.listSections(guide.id) } : null;
+    })(),
   };
 }
 
@@ -102,6 +115,24 @@ export function serializeExportMarkdown(data: AtlasExportData): string {
       if (relationship.note) lines.push(`  ${relationship.note}`);
     }
     lines.push("");
+  }
+
+  if (data.guide && data.guide.sections.length > 0) {
+    const claimsById = new Map(data.claims.map((claim) => [claim.id, claim]));
+    lines.push(`## Guide: ${data.guide.title} (v${data.guide.version})`, "");
+    for (const section of data.guide.sections) {
+      lines.push(`### ${getPillar(section.pillarId).name} — ${section.topic}`, "");
+      // Resolve [^claimId] markers into readable citations.
+      const body = section.bodyMarkdown.replace(/\[\^([\w-]+)\]/g, (_match, id: string) => {
+        const claim = claimsById.get(id);
+        const source = claim?.sourceId ? sourcesById.get(claim.sourceId) : undefined;
+        if (!source) return "";
+        const timestamp =
+          claim?.timestampStart != null ? ` @ ${formatTimestamp(claim.timestampStart)}` : "";
+        return ` (— ${source.title}${timestamp})`;
+      });
+      lines.push(body, "");
+    }
   }
 
   return `${lines.join("\n").trimEnd()}\n`;

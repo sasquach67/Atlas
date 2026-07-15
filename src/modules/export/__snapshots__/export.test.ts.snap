@@ -1097,7 +1097,8 @@ exports[`Premed Atlas export serializers > serializes seed data to stable JSON 1
         "match list"
       ]
     }
-  ]
+  ],
+  "guide": null
 }
 "
 `;
