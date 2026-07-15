@@ -16,7 +16,16 @@ import type { Repositories } from "@/repositories/types";
 
 const DEFAULT_DB_PATH = path.join(process.cwd(), "data", "atlas.db");
 
-let singleton: { db: Database; repos: Repositories } | null = null;
+/**
+ * The singleton lives on globalThis because Next bundles route handlers and
+ * pages as separate module copies within one process: module-level state
+ * would yield two SQLite connections (and the pages copy served stale reads
+ * under `next start`). One shared connection guarantees read-your-writes
+ * across every server context. Same pattern Prisma documents for Next.js.
+ */
+type DbSingleton = { db: Database; repos: Repositories };
+
+const globalStore = globalThis as typeof globalThis & { __atlasDb?: DbSingleton | null };
 
 export function openDatabase(dbPath: string): Database {
   if (dbPath !== ":memory:") {
@@ -63,20 +72,20 @@ export function createDatabase(dbPath: string, options?: { seed?: boolean }): {
 }
 
 export function getRepos(): Repositories {
-  if (!singleton) {
+  if (!globalStore.__atlasDb) {
     const dbPath = process.env.ATLAS_DB_PATH || DEFAULT_DB_PATH;
     const seed = process.env.ATLAS_SKIP_SEED !== "1";
-    singleton = createDatabase(dbPath, { seed });
+    globalStore.__atlasDb = createDatabase(dbPath, { seed });
   }
-  return singleton.repos;
+  return globalStore.__atlasDb.repos;
 }
 
 /** Wipes all rows and reseeds. Used by the Settings "reset demo data" action. */
 export function resetToSeedData(): void {
   const repos = getRepos();
-  const db = singleton!.db;
+  const db = globalStore.__atlasDb!.db;
   db.exec(
-    `DELETE FROM relationships; DELETE FROM action_items; DELETE FROM claims; DELETE FROM transcripts; DELETE FROM sources; DELETE FROM saved_layouts;`,
+    `DELETE FROM relationships; DELETE FROM action_items; DELETE FROM claims; DELETE FROM transcripts; DELETE FROM sources; DELETE FROM saved_layouts; DELETE FROM guides; DELETE FROM guide_sections; DELETE FROM claim_embeddings;`,
   );
   seedDatabase(repos);
 }

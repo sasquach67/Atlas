@@ -16,7 +16,7 @@ test.describe.serial("E.44 MVP proof", () => {
     await page.goto("/inbox");
     await page.getByLabel("Title").fill("MVP proof audio import");
     await page.getByLabel("Audio/video file").setInputFiles(fixturePath);
-    await page.getByRole("button", { name: "Import file metadata" }).click();
+    await page.getByRole("button", { name: "Upload and transcribe" }).click();
 
     await expect(page.getByRole("link", { name: "Review claims" }).first()).toBeVisible({
       timeout: 15000,
