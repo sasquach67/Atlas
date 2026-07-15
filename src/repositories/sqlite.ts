@@ -12,6 +12,7 @@ import type {
 import type {
   ActionRepository,
   ClaimRepository,
+  EmbeddingRepository,
   LayoutRepository,
   RelationshipRepository,
   Repositories,
@@ -614,6 +615,41 @@ class SqliteLayoutRepository implements LayoutRepository {
   }
 }
 
+class SqliteEmbeddingRepository implements EmbeddingRepository {
+  constructor(private db: Database) {}
+
+  getMany(claimIds: string[]): { claimId: string; model: string; vector: number[]; textHash: string }[] {
+    if (claimIds.length === 0) return [];
+    const rows = this.db
+      .prepare(
+        `SELECT * FROM claim_embeddings WHERE claim_id IN (${claimIds.map(() => "?").join(", ")})`,
+      )
+      .all(...claimIds) as Row[];
+    return rows.map((row) => ({
+      claimId: str(row, "claim_id"),
+      model: str(row, "model"),
+      vector: json<number[]>(row, "vector", []),
+      textHash: str(row, "text_hash"),
+    }));
+  }
+
+  upsert(embedding: { claimId: string; model: string; vector: number[]; textHash: string }): void {
+    this.db
+      .prepare(
+        `INSERT INTO claim_embeddings (claim_id, model, vector, text_hash, updated_at)
+         VALUES (?, ?, ?, ?, ?)
+         ON CONFLICT(claim_id) DO UPDATE SET model = excluded.model, vector = excluded.vector, text_hash = excluded.text_hash, updated_at = excluded.updated_at`,
+      )
+      .run(
+        embedding.claimId,
+        embedding.model,
+        JSON.stringify(embedding.vector),
+        embedding.textHash,
+        new Date().toISOString(),
+      );
+  }
+}
+
 export function createRepositories(db: Database): Repositories {
   return {
     sources: new SqliteSourceRepository(db),
@@ -622,5 +658,6 @@ export function createRepositories(db: Database): Repositories {
     relationships: new SqliteRelationshipRepository(db),
     actions: new SqliteActionRepository(db),
     layouts: new SqliteLayoutRepository(db),
+    embeddings: new SqliteEmbeddingRepository(db),
   };
 }

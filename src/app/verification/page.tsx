@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getRepos } from "@/db";
 import { formatTimestamp, humanize } from "@/lib/format";
+import { DuplicatesPanel, type DuplicateSuggestion } from "./duplicates-panel";
 
 export const metadata = { title: "Verification" };
 export const dynamic = "force-dynamic";
@@ -24,6 +25,25 @@ export default function VerificationPage() {
     unverified: claims.filter((claim) => claim.verificationStatus === "unverified"),
   };
 
+  const duplicateSuggestions: DuplicateSuggestion[] = repos.relationships
+    .list()
+    .filter((rel) => rel.relationshipType === "duplicates" && !rel.userConfirmed)
+    .flatMap((rel) => {
+      const a = repos.claims.getById(rel.fromClaimId);
+      const b = repos.claims.getById(rel.toClaimId);
+      if (!a || !b || a.status === "rejected" || b.status === "rejected") return [];
+      const summarize = (claim: typeof a) => ({
+        id: claim.id,
+        canonicalText: claim.canonicalText,
+        confidence: claim.confidence,
+        status: claim.status,
+        sourceTitle: claim.sourceId
+          ? (sourcesById.get(claim.sourceId)?.title ?? null)
+          : null,
+      });
+      return [{ relationshipId: rel.id, note: rel.note, a: summarize(a), b: summarize(b) }];
+    });
+
   return (
     <div>
       <PageHeader title="Verification" description="Claims awaiting evidence and review." />
@@ -33,6 +53,7 @@ export default function VerificationPage() {
           and consensus tracking are planned for Phase 5; for now, every item remains source-linked
           so you can inspect the underlying claim.
         </p>
+        <DuplicatesPanel suggestions={duplicateSuggestions} />
         {Object.entries(groups).map(([status, items]) => (
           <Card key={status} className="rounded-lg">
             <CardHeader>

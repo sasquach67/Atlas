@@ -85,6 +85,16 @@ CREATE TABLE IF NOT EXISTS action_items (
   created_at TEXT NOT NULL
 );
 
+-- Embedding cache for duplicate detection. This is the pgvector seam: on
+-- Postgres, vector becomes a pgvector column and cosine moves into SQL.
+CREATE TABLE IF NOT EXISTS claim_embeddings (
+  claim_id TEXT PRIMARY KEY REFERENCES claims(id) ON DELETE CASCADE,
+  model TEXT NOT NULL,
+  vector TEXT NOT NULL,
+  text_hash TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS saved_layouts (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,

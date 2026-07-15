@@ -19,6 +19,7 @@ import {
   type TranscriptionProvider,
 } from "@/modules/transcript";
 import { deleteMediaFile, MAX_UPLOAD_BYTES, saveMediaFile, sha256 } from "./media";
+import { getSimilarityProvider, scanForDuplicates } from "@/modules/similarity";
 import {
   ExtractionFailedError,
   getExtractionProvider,
@@ -343,6 +344,17 @@ export async function processSource(
     );
     const relationships = relationshipsFromExtraction(extraction, claims);
     for (const relationship of relationships) repos.relationships.create(relationship);
+
+    // Suggest duplicates against existing knowledge (spec 17: never auto-merge).
+    // Similarity failures must not fail the import.
+    try {
+      await scanForDuplicates(repos, getSimilarityProvider(repos.embeddings), {
+        onlyInvolving: claims.map((claim) => claim.id),
+      });
+    } catch {
+      // Suggestions are best-effort; the Verification page can re-scan.
+    }
+
     source = repos.sources.update(source.id, {
       processingStatus: "ready_for_review",
       errorMessage: null,

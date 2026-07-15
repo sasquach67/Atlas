@@ -59,6 +59,11 @@ export interface ActionRepository {
   delete(id: string): void;
 }
 
+export interface EmbeddingRepository {
+  getMany(claimIds: string[]): { claimId: string; model: string; vector: number[]; textHash: string }[];
+  upsert(embedding: { claimId: string; model: string; vector: number[]; textHash: string }): void;
+}
+
 export interface LayoutRepository {
   getDefault(): SavedLayout | null;
   savePositions(positions: Record<string, NodePosition>): SavedLayout;
@@ -72,4 +77,5 @@ export interface Repositories {
   relationships: RelationshipRepository;
   actions: ActionRepository;
   layouts: LayoutRepository;
+  embeddings: EmbeddingRepository;
 }
